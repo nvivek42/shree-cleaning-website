@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shree Cleaning & Housekeeping Services - Professional Cleaning in Pune</title>
+    <meta name="description" content="Professional cleaning and housekeeping services in Pune, Maharashtra. Trusted by 100+ clients for home, office, and commercial cleaning.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Contact Button -->
+    <div class="floating-contact">
+        <a href="tel:+919511828287" class="contact-btn" id="floatingContact">
+            <div class="ripple-effect"></div>
+            <div class="glow-effect"></div>
+            <div class="contact-content">
+                <i class="fas fa-phone phone-icon"></i>
+                <span class="contact-number">+91 9511828287</span>
+            </div>
+            <div class="notification-dot"></div>
+            <div class="notification-dot-static"></div>
+        </a>
+        <div class="call-label">
+            <span>📞 Call Now!</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/10536627-xDcMHnFfKkeOY7GnPgX89VvMxR4y19.png" alt="Lord Ganesha" class="ganesha-logo">
+                <a href="#home">Shree Cleaning</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#reviews" class="nav-link">Reviews</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="profile-img">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/10536627-xDcMHnFfKkeOY7GnPgX89VvMxR4y19.png" alt="Lord Ganesha - Blessing for Clean Spaces" class="ganesha-hero">
+            </div>
+            <h1>Shree Cleaning & Housekeeping Services</h1>
+            <p>Professional Cleaning & Housekeeping for Homes and Offices</p>
+            <a href="#contact" class="cta-button">Get In Touch</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <div class="about-content">
+                <div class="info-card">
+                    <h3><i class="fas fa-users"></i> Who We Are</h3>
+                    <ul>
+                        <li><i class="fas fa-calendar"></i> <span>In Business: 5+ Years</span></li>
+                        <li><i class="fas fa-map-marker-alt"></i> <span>Serving: Pune, Maharashtra</span></li>
+                        <li><i class="fas fa-heart"></i> <span>Trusted by 100+ clients</span></li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3><i class="fas fa-cogs"></i> Our Values</h3>
+                    <div class="values-tags">
+                        <span class="skill-tag">Reliability</span>
+                        <span class="skill-tag">Professionalism</span>
+                        <span class="skill-tag">Attention to Detail</span>
+                        <span class="skill-tag">Trustworthy Staff</span>
+                        <span class="skill-tag">Customer Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2>Our Work Gallery</h2>
+            <div class="gallery-grid" id="workGallery">
+                <!-- Images will be added dynamically via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Residential Cleaning</h3>
+                        <p class="category">Homes & Apartments</p>
+                        <p>Deep cleaning, regular housekeeping, kitchen & bathroom sanitization, floor and upholstery cleaning for homes of all sizes.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Office & Commercial Cleaning</h3>
+                        <p class="category">Small & Large Offices</p>
+                        <p>Comprehensive office cleaning, dusting, waste disposal, pantry management, and reception area upkeep for workspaces.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Specialized Services</h3>
+                        <p class="category">On Demand</p>
+                        <p>Floor polishing, glass & window cleaning, event clean-up, deep sanitization, and other custom cleaning services.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2>Client Reviews</h2>
+            <div class="reviews-container" id="reviewsContainer">
+                <!-- Reviews will be added dynamically via JavaScript -->
+            </div>
+            <div class="review-form">
+                <h3>Add Your Review</h3>
+                <form id="addReviewForm">
+                    <input type="text" id="reviewerName" placeholder="Your Name" required>
+                    <textarea id="reviewText" placeholder="Share your experience with our services..." rows="4" required></textarea>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-item phone-contact">
+                    <div class="contact-bg-effects">
+                        <div class="bg-circle-1"></div>
+                        <div class="bg-circle-2"></div>
+                    </div>
+                    <div class="contact-content-inner">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <p class="contact-label">Call Now for Instant Quote</p>
+                            <a href="tel:+919511828287" class="contact-main">+91 9511828287</a>
+                            <div class="availability">
+                                <div class="status-dot"></div>
+                                <span>Available 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>shreecleaning100@gmail.com</p>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>Pune, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/10536627-xDcMHnFfKkeOY7GnPgX89VvMxR4y19.png" alt="Lord Ganesha" class="footer-logo">
+                <span>Shree Cleaning & Housekeeping Services</span>
+            </div>
+            <p>&copy; 2025 Shree Cleaning & Housekeeping Services. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
