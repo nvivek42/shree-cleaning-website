@@ -1,6 +1,6 @@
 const workImages = [
   {
-    src: "images/image1.jpg",
+    src: "https://nvivek42.github.io/shree-cleaning-website/images/image1.jpg",
     alt: "Home Cleaning",
     title: "Home Cleaning",
     desc: "Spotless home and kitchen cleaning.",
