@@ -51,7 +51,7 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <div class="profile-img">
-                <img src="/shree-cleaning-website/images/10536627.png class=ganesha-hero ">
+                <img src="./images/10536627.png" alt="Lord Ganesha" class="ganesha-hero">
             </div>
             <h1>Shree Cleaning & Housekeeping Services</h1>
             <p>Professional Cleaning & Housekeeping for Homes and Offices</p>
@@ -126,43 +126,70 @@
         </div>
     </section>
 
-    <!-- Reviews Section -->
-   <!-- Reviews Section -->
-<section id="reviews" class="reviews">
-    <div class="container">
-        <h2>Client Reviews</h2>
-        <div class="reviews-carousel-wrapper">
-            <button class="carousel-nav prev" id="prevReview">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="reviews-carousel" id="reviewsCarousel">
-                <!-- Reviews will be dynamically added here -->
-            </div>
-            <button class="carousel-nav next" id="nextReview">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-        
-        <div class="review-form">
-            <h3>Share Your Experience</h3>
-            <form id="reviewForm">
-                <div class="rating-input">
-                    <label>Rating:</label>
-                    <div class="stars">
-                        <i class="far fa-star" data-rating="1"></i>
-                        <i class="far fa-star" data-rating="2"></i>
-                        <i class="far fa-star" data-rating="3"></i>
-                        <i class="far fa-star" data-rating="4"></i>
-                        <i class="far fa-star" data-rating="5"></i>
-                    </div>
+    <!-- Enhanced Reviews Section -->
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2>Client Reviews</h2>
+            
+            <!-- Review Statistics -->
+            <div class="review-stats" id="reviewStats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalReviews">0</div>
+                    <div class="stat-label">Total Reviews</div>
                 </div>
-                <input type="text" id="nameInput" placeholder="Your Name" required>
-                <textarea id="reviewText" placeholder="Share your experience..." required></textarea>
-                <button type="submit">Submit Review</button>
-            </form>
+                <div class="stat-item">
+                    <div class="stat-number" id="averageRating">0.0</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="fiveStarReviews">0</div>
+                    <div class="stat-label">5-Star Reviews</div>
+                </div>
+            </div>
+
+            <!-- Reviews Carousel -->
+            <div class="reviews-carousel-wrapper">
+                <button class="carousel-nav prev" id="prevReview">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="reviews-carousel" id="reviewsCarousel">
+                    <!-- Reviews will be dynamically added here -->
+                </div>
+                <button class="carousel-nav next" id="nextReview">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Review Form -->
+            <div class="review-form">
+                <h3>Share Your Experience</h3>
+                <form id="reviewForm">
+                    <div class="rating-input">
+                        <label>Rating:</label>
+                        <div class="stars" id="ratingStars">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="nameInput" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="reviewText" placeholder="Share your experience..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
+                    <div class="success-message" id="successMessage">
+                        <i class="fas fa-check-circle"></i> Thank you! Your review has been submitted successfully.
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
@@ -206,7 +233,7 @@
     <footer>
         <div class="container">
             <div class="footer-content">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/10536627-xDcMHnFfKkeOY7GnPgX89VvMxR4y19.png" alt="Lord Ganesha" class="footer-logo">
+                <img src="./images/10536627.png" alt="Lord Ganesha" class="footer-logo">
                 <span>Shree Cleaning & Housekeeping Services</span>
             </div>
             <p>&copy; 2025 Shree Cleaning & Housekeeping Services. All rights reserved.</p>
