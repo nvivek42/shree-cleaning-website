@@ -37,6 +37,80 @@ const workImages = [
   },
 ]
 
+// --- Horizontally scrolling feedback with persistence ---
+
+// Key for localStorage
+const FEEDBACK_KEY = "shree_cleaning_feedbacks";
+
+// Get elements
+const reviewsCarousel = document.getElementById("reviewsCarousel");
+const addReviewForm = document.getElementById("addReviewForm");
+const reviewerName = document.getElementById("reviewerName");
+const reviewText = document.getElementById("reviewText");
+const btnLeft = document.getElementById("carouselBtnLeft");
+const btnRight = document.getElementById("carouselBtnRight");
+
+// Load feedbacks from localStorage
+function loadFeedbacks() {
+    const stored = localStorage.getItem(FEEDBACK_KEY);
+    return stored ? JSON.parse(stored) : [
+        { name: "Neha P.", text: "Excellent cleaning! Very professional and on time." },
+        { name: "Rahul S.", text: "Our office looks spotless after every service." },
+        { name: "Priya G.", text: "Great attention to detail. Highly recommend!" }
+    ];
+}
+
+// Save feedbacks to localStorage
+function saveFeedbacks(feedbacks) {
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedbacks));
+}
+
+// Render feedbacks as horizontally scrolling cards
+function renderFeedbacks() {
+    const feedbacks = loadFeedbacks();
+    reviewsCarousel.innerHTML = "";
+    feedbacks.forEach(fb => {
+        const card = document.createElement("div");
+        card.className = "review-card";
+        card.innerHTML = `
+            <div class="reviewer">${fb.name}</div>
+            <div class="review-text">${fb.text}</div>
+        `;
+        reviewsCarousel.appendChild(card);
+    });
+}
+
+// Add review event
+addReviewForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const name = reviewerName.value.trim() || "Anonymous";
+    const text = reviewText.value.trim();
+    if (!text) return;
+    const feedbacks = loadFeedbacks();
+    feedbacks.push({ name, text });
+    saveFeedbacks(feedbacks);
+    renderFeedbacks();
+    addReviewForm.reset();
+    // Scroll to last feedback
+    setTimeout(() => {
+        reviewsCarousel.scrollTo({ left: reviewsCarousel.scrollWidth, behavior: "smooth" });
+    }, 100);
+});
+
+// Carousel scroll buttons
+btnLeft.addEventListener("click", () => {
+    reviewsCarousel.scrollBy({ left: -300, behavior: "smooth" });
+});
+btnRight.addEventListener("click", () => {
+    reviewsCarousel.scrollBy({ left: 300, behavior: "smooth" });
+});
+
+// Touch/drag scroll is enabled natively via overflow-x: auto
+
+// Render on page load
+renderFeedbacks();
+
+
 function loadGallery() {
   const gallery = document.getElementById("workGallery")
   workImages.forEach((item, index) => {
