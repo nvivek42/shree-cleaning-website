@@ -127,26 +127,42 @@
     </section>
 
     <!-- Reviews Section -->
-    <section id="reviews" class="reviews">
-        <div class="container">
-            <h2>Client Reviews</h2>
-            <div class="reviews-carousel-container">
-                <button class="carousel-btn left" id="carouselBtnLeft" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
-                <div class="reviews-carousel" id="reviewsCarousel">
-                    <!-- Feedback cards will be injected here -->
-                </div>
-                <button class="carousel-btn right" id="carouselBtnRight" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+   <!-- Reviews Section -->
+<section id="reviews" class="reviews">
+    <div class="container">
+        <h2>Client Reviews</h2>
+        <div class="reviews-carousel-wrapper">
+            <button class="carousel-nav prev" id="prevReview">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="reviews-carousel" id="reviewsCarousel">
+                <!-- Reviews will be dynamically added here -->
             </div>
-            <div class="review-form">
-                <h3>Add Your Review</h3>
-                <form id="addReviewForm">
-                    <input type="text" id="reviewerName" placeholder="Your Name" required>
-                    <textarea id="reviewText" placeholder="Share your experience with our services..." rows="4" required></textarea>
-                    <button type="submit"><i class="fas fa-paper-plane"></i> Submit Review</button>
-                </form>
-            </div>
+            <button class="carousel-nav next" id="nextReview">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-    </section>
+        
+        <div class="review-form">
+            <h3>Share Your Experience</h3>
+            <form id="reviewForm">
+                <div class="rating-input">
+                    <label>Rating:</label>
+                    <div class="stars">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                </div>
+                <input type="text" id="nameInput" placeholder="Your Name" required>
+                <textarea id="reviewText" placeholder="Share your experience..." required></textarea>
+                <button type="submit">Submit Review</button>
+            </form>
+        </div>
+    </div>
+</section>
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
