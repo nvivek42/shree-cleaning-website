@@ -46,8 +46,8 @@ function loadGallery() {
     div.innerHTML = `
             <img src="${item.src}" alt="${item.alt}" title="${item.title}" loading="lazy" />
             <div class="gallery-overlay">
-                <h3>${item.title}</h3>
-                <p>${item.desc}</p>
+                // <h3>${item.title}</h3>
+                // <p>${item.desc}</p>
             </div>
         `
     gallery.appendChild(div)
