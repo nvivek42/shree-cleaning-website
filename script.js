@@ -1,382 +1,442 @@
+// Work Images for Gallery
 const workImages = [
   {
-    src: "/shree-cleaning-website/images/image1.jpg",
+    src: "./images/image1.jpg",
     alt: "Home Cleaning",
     title: "Home Cleaning",
     desc: "Spotless home and kitchen cleaning.",
   },
   {
-    src: "/shree-cleaning-website/images/image2.jpg",
+    src: "./images/image2.jpg",
     alt: "Office Cleaning",
     title: "Office Cleaning",
     desc: "Professional office workspace cleaning.",
   },
   {
-    src: "/shree-cleaning-website/images/image3.jpg",
+    src: "./images/image3.jpg",
     alt: "Glass Cleaning",
     title: "Glass Cleaning",
     desc: "Windows, mirrors, and glass surfaces.",
   },
   {
-    src: "/shree-cleaning-website/images/image4.jpg",
+    src: "./images/image4.jpg",
     alt: "Sanitization",
     title: "Sanitization",
     desc: "Germ-free, safe environments.",
   },
   {
-    src: "/shree-cleaning-website/images/image5.jpg",
+    src: "./images/image5.jpg",
     alt: "Pantry Upkeep",
     title: "Pantry Upkeep",
     desc: "Clean, stocked, and well-managed pantries.",
   },
   {
-    src: "/shree-cleaning-website/images/image6.jpg",
+    src: "./images/image6.jpg",
     alt: "After Event Clean-up",
     title: "Event Clean-up",
     desc: "Post-event rapid cleaning services.",
   },
-]
-
-// Reviews functionality
-const STORAGE_KEY = 'shreeCleaningReviews';
-let currentRating = 0;
-let autoScrollInterval;
-
-// DOM Elements
-const reviewsCarousel = document.getElementById('reviewsCarousel');
-const reviewForm = document.getElementById('reviewForm');
-const nameInput = document.getElementById('nameInput');
-const reviewText = document.getElementById('reviewText');
-const starIcons = document.querySelectorAll('.rating-input .stars i');
-const prevButton = document.getElementById('prevReview');
-const nextButton = document.getElementById('nextReview');
-
-// Sample initial reviews
-const initialReviews = [
-    { name: "Priya Shah", rating: 5, text: "Exceptional cleaning service! They transformed my home completely." },
-    { name: "Rahul Mehta", rating: 4, text: "Very professional team and great attention to detail." },
-    { name: "Anjali Patel", rating: 5, text: "Best cleaning service in Pune! Highly recommended." }
 ];
 
-// Load reviews from localStorage or use initial reviews
-function loadReviews() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : initialReviews;
-}
+// Enhanced Reviews Management System
+class ReviewsManager {
+  constructor() {
+    this.storageKey = 'shreeCleaningReviews';
+    this.currentRating = 0;
+    this.autoScrollInterval = null;
+    this.currentIndex = 0;
+    this.reviewsPerView = this.getReviewsPerView();
+    this.scrollSpeed = 30; // pixels per second for auto-scroll
+    
+    // Initial sample reviews with dates
+    this.initialReviews = [
+      { 
+        name: "Priya Shah", 
+        rating: 5, 
+        text: "Exceptional cleaning service! They transformed my home completely. Very professional team and great attention to detail.", 
+        date: "2025-01-10" 
+      },
+      { 
+        name: "Rahul Mehta", 
+        rating: 4, 
+        text: "Very professional team and great attention to detail. Highly recommend for office cleaning services.", 
+        date: "2025-01-08" 
+      },
+      { 
+        name: "Anjali Patel", 
+        rating: 5, 
+        text: "Best cleaning service in Pune! Always punctual and thorough in their work. Will definitely use again.", 
+        date: "2025-01-05" 
+      },
+      { 
+        name: "Sarvesh Walkar", 
+        rating: 5, 
+        text: "Outstanding service for our office cleaning needs. The team is reliable and efficient.", 
+        date: "2025-01-03" 
+      },
+      { 
+        name: "Amit Joshi", 
+        rating: 4, 
+        text: "Great experience with their deep cleaning service. Very satisfied with the results.", 
+        date: "2024-12-28" 
+      },
+      { 
+        name: "Sneha Kulkarni", 
+        rating: 5, 
+        text: "Amazing attention to detail and very professional staff. Our office has never looked better!", 
+        date: "2024-12-25" 
+      },
+      { 
+        name: "Rajesh Patil", 
+        rating: 4, 
+        text: "Good service and reasonable pricing. They completed the deep cleaning on time.", 
+        date: "2024-12-20" 
+      },
+      { 
+        name: "Meera Desai", 
+        rating: 5, 
+        text: "Excellent post-event cleaning service. They handled everything perfectly and quickly.", 
+        date: "2024-12-15" 
+      }
+    ];
+    
+    this.init();
+  }
 
-// Save reviews to localStorage
-function saveReviews(reviews) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
-}
+  init() {
+    this.bindEvents();
+    this.loadReviews();
+    this.renderReviews();
+    this.updateStats();
+    this.startAutoScroll();
+    this.handleResize();
+  }
 
-// Create star rating HTML
-function getStarRating(rating) {
+  getReviewsPerView() {
+    const width = window.innerWidth;
+    if (width < 480) return 1;
+    if (width < 768) return 1;
+    if (width < 1024) return 2;
+    return 3;
+  }
+
+  handleResize() {
+    window.addEventListener('resize', () => {
+      this.reviewsPerView = this.getReviewsPerView();
+      this.currentIndex = 0;
+      this.updateCarouselPosition();
+      this.restartAutoScroll();
+    });
+  }
+
+  bindEvents() {
+    // Star rating events
+    const stars = document.querySelectorAll('#ratingStars i');
+    stars.forEach(star => {
+      star.addEventListener('mouseover', (e) => this.highlightStars(e.target.dataset.rating));
+      star.addEventListener('click', (e) => this.selectRating(e.target.dataset.rating));
+      star.addEventListener('mouseleave', () => this.resetStars());
+    });
+
+    // Form submission
+    document.getElementById('reviewForm').addEventListener('submit', (e) => this.handleFormSubmit(e));
+
+    // Navigation buttons
+    document.getElementById('prevReview').addEventListener('click', () => this.previousReview());
+    document.getElementById('nextReview').addEventListener('click', () => this.nextReview());
+
+    // Pause auto-scroll on hover
+    const carousel = document.getElementById('reviewsCarousel');
+    const wrapper = document.querySelector('.reviews-carousel-wrapper');
+    
+    wrapper.addEventListener('mouseenter', () => this.stopAutoScroll());
+    wrapper.addEventListener('mouseleave', () => this.startAutoScroll());
+    
+    // Touch events for mobile
+    wrapper.addEventListener('touchstart', () => this.stopAutoScroll());
+    wrapper.addEventListener('touchend', () => {
+      setTimeout(() => this.startAutoScroll(), 3000); // Resume after 3 seconds
+    });
+  }
+
+  loadReviews() {
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        this.reviews = JSON.parse(stored);
+      } else {
+        this.reviews = [...this.initialReviews];
+        this.saveReviews();
+      }
+    } catch (error) {
+      console.warn('Error loading reviews from localStorage:', error);
+      this.reviews = [...this.initialReviews];
+    }
+  }
+
+  saveReviews() {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(this.reviews));
+    } catch (error) {
+      console.warn('Error saving reviews to localStorage:', error);
+    }
+  }
+
+  highlightStars(rating) {
+    const stars = document.querySelectorAll('#ratingStars i');
+    stars.forEach(star => {
+      if (star.dataset.rating <= rating) {
+        star.classList.remove('far');
+        star.classList.add('fas');
+      } else {
+        star.classList.add('far');
+        star.classList.remove('fas');
+      }
+    });
+  }
+
+  selectRating(rating) {
+    this.currentRating = parseInt(rating);
+    this.highlightStars(rating);
+  }
+
+  resetStars() {
+    this.highlightStars(this.currentRating);
+  }
+
+  formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    if (diffDays < 365) return `${Math.ceil(diffDays / 30)} months ago`;
+    
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+
+  createStarRating(rating) {
     let stars = '';
     for (let i = 1; i <= 5; i++) {
-        stars += `<i class="fas fa-star ${i <= rating ? 'active' : ''}"></i>`;
+      if (i <= rating) {
+        stars += '<i class="fas fa-star"></i>';
+      } else {
+        stars += '<i class="far fa-star"></i>';
+      }
     }
     return stars;
-}
+  }
 
-// Render reviews in carousel
-function renderReviews() {
-    const reviews = loadReviews();
-    reviewsCarousel.innerHTML = reviews.map(review => `
-        <div class="review-card">
-            <div class="stars">${getStarRating(review.rating)}</div>
-            <div class="reviewer-name">${review.name}</div>
-            <div class="review-text">${review.text}</div>
+  renderReviews() {
+    const carousel = document.getElementById('reviewsCarousel');
+    if (!carousel) return;
+    
+    carousel.innerHTML = this.reviews.map(review => `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer-name">${this.escapeHtml(review.name)}</div>
+          <div class="review-date">${this.formatDate(review.date)}</div>
         </div>
+        <div class="stars">${this.createStarRating(review.rating)}</div>
+        <div class="review-text">${this.escapeHtml(review.text)}</div>
+      </div>
     `).join('');
-}
+    
+    this.updateCarouselPosition();
+  }
 
-// Star rating functionality
-starIcons.forEach(star => {
-    star.addEventListener('mouseover', function() {
-        const rating = this.dataset.rating;
-        starIcons.forEach(s => {
-            if (s.dataset.rating <= rating) {
-                s.classList.remove('far');
-                s.classList.add('fas');
-            } else {
-                s.classList.add('far');
-                s.classList.remove('fas');
-            }
-        });
-    });
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
 
-    star.addEventListener('click', function() {
-        currentRating = this.dataset.rating;
-    });
+  updateStats() {
+    const totalReviews = this.reviews.length;
+    const averageRating = totalReviews > 0 ? 
+      (this.reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews).toFixed(1) : 
+      '0.0';
+    const fiveStarReviews = this.reviews.filter(review => review.rating === 5).length;
 
-    star.addEventListener('mouseleave', function() {
-        starIcons.forEach(s => {
-            if (s.dataset.rating <= currentRating) {
-                s.classList.remove('far');
-                s.classList.add('fas');
-            } else {
-                s.classList.add('far');
-                s.classList.remove('fas');
-            }
-        });
-    });
-});
+    // Update DOM elements
+    const totalElement = document.getElementById('totalReviews');
+    const averageElement = document.getElementById('averageRating');
+    const fiveStarElement = document.getElementById('fiveStarReviews');
 
-// Form submission
-reviewForm.addEventListener('submit', function(e) {
+    if (totalElement) totalElement.textContent = totalReviews;
+    if (averageElement) averageElement.textContent = averageRating;
+    if (fiveStarElement) fiveStarElement.textContent = fiveStarReviews;
+  }
+
+  handleFormSubmit(e) {
     e.preventDefault();
     
-    if (!currentRating) {
-        alert('Please select a rating');
-        return;
+    if (!this.currentRating) {
+      this.showMessage('Please select a rating', 'error');
+      return;
+    }
+
+    const nameInput = document.getElementById('nameInput');
+    const reviewText = document.getElementById('reviewText');
+    
+    if (!nameInput.value.trim() || !reviewText.value.trim()) {
+      this.showMessage('Please fill in all fields', 'error');
+      return;
     }
 
     const newReview = {
-        name: nameInput.value,
-        rating: parseInt(currentRating),
-        text: reviewText.value
+      name: nameInput.value.trim(),
+      rating: this.currentRating,
+      text: reviewText.value.trim(),
+      date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
     };
 
-    const reviews = loadReviews();
-    reviews.push(newReview);
-    saveReviews(reviews);
-    renderReviews();
+    // Add to beginning of array (most recent first)
+    this.reviews.unshift(newReview);
+    this.saveReviews();
+    this.renderReviews();
+    this.updateStats();
 
     // Reset form
-    reviewForm.reset();
-    currentRating = 0;
-    starIcons.forEach(s => {
-        s.classList.add('far');
-        s.classList.remove('fas');
-    });
-});
+    this.resetForm();
+    this.showMessage('Thank you! Your review has been submitted successfully.', 'success');
 
-// Auto-scroll functionality
-function startAutoScroll() {
-    autoScrollInterval = setInterval(() => {
-        reviewsCarousel.scrollLeft += 1;
-        if (reviewsCarousel.scrollLeft >= reviewsCarousel.scrollWidth - reviewsCarousel.clientWidth) {
-            reviewsCarousel.scrollLeft = 0;
-        }
-    }, 30);
-}
-
-function stopAutoScroll() {
-    clearInterval(autoScrollInterval);
-}
-
-// Manual navigation
-prevButton.addEventListener('click', () => {
-    reviewsCarousel.scrollBy({
-        left: -320,
-        behavior: 'smooth'
-    });
-});
-
-nextButton.addEventListener('click', () => {
-    reviewsCarousel.scrollBy({
-        left: 320,
-        behavior: 'smooth'
-    });
-});
-
-// Pause auto-scroll on hover/touch
-reviewsCarousel.addEventListener('mouseenter', stopAutoScroll);
-reviewsCarousel.addEventListener('mouseleave', startAutoScroll);
-reviewsCarousel.addEventListener('touchstart', stopAutoScroll);
-reviewsCarousel.addEventListener('touchend', startAutoScroll);
-
-// Initialize
-renderReviews();
-startAutoScroll();
-
-function loadGallery() {
-  const gallery = document.getElementById("workGallery")
-  workImages.forEach((item, index) => {
-    const div = document.createElement("div")
-    div.className = "gallery-item"
-    div.style.animationDelay = `${index * 0.1}s`
-    div.innerHTML = `
-            <img src="${item.src}" alt="${item.alt}" title="${item.title}" loading="lazy" />
-            <div class="gallery-overlay">
-                // <h3>${item.title}</h3>
-                // <p>${item.desc}</p>
-            </div>
-        `
-    gallery.appendChild(div)
-  })
-}
-
-// Reviews System
-const reviews = [
-  {
-    name: "Sarvesh Walkar",
-    text: "Very professional and reliable. Our office is always spotless after their visit!",
-    rating: 5,
-  },
-  {
-    name: "Priya Kulkarni",
-    text: "Excellent cleaning and friendly staff. Highly recommended for home cleaning.",
-    rating: 4,
-  },
-  {
-    name: "Amit Joshi",
-    text: "We hire Shree Cleaning for every event at our office. Outstanding job every time!",
-    rating: 5,
-  },
-]
-
-function displayReviews() {
-  const container = document.getElementById("reviewsContainer")
-  container.innerHTML = ""
-
-  reviews.forEach((review, index) => {
-    const div = document.createElement("div")
-    div.className = "review-card"
-    div.style.animationDelay = `${index * 0.2}s`
-
-    const stars = "★".repeat(Math.floor(review.rating)) + (review.rating % 1 ? "☆" : "")
-
-    div.innerHTML = `
-            <div class="review-header">
-                <h4>${review.name}</h4>
-                <div class="stars">${stars}</div>
-            </div>
-            <p class="review-text">${review.text}</p>
-        `
-    container.appendChild(div)
-  })
-}
-
-// Handle new review submission
-document.addEventListener("DOMContentLoaded", () => {
-  const reviewForm = document.getElementById("addReviewForm")
-  if (reviewForm) {
-    reviewForm.addEventListener("submit", function (e) {
-      e.preventDefault()
-
-      const name = document.getElementById("reviewerName").value
-      const text = document.getElementById("reviewText").value
-
-      if (name && text) {
-        reviews.unshift({ name, text, rating: 5 })
-        displayReviews()
-        this.reset()
-
-        // Show success message
-        const button = this.querySelector("button")
-        const originalText = button.innerHTML
-        button.innerHTML = '<i class="fas fa-check"></i> Review Added!'
-        button.style.background = "#10b981"
-
-        setTimeout(() => {
-          button.innerHTML = originalText
-          button.style.background = ""
-        }, 2000)
-      }
-    })
+    // Scroll to show new review
+    this.currentIndex = 0;
+    this.updateCarouselPosition();
   }
-})
+
+  resetForm() {
+    document.getElementById('reviewForm').reset();
+    this.currentRating = 0;
+    const stars = document.querySelectorAll('#ratingStars i');
+    stars.forEach(star => {
+      star.classList.add('far');
+      star.classList.remove('fas');
+    });
+  }
+
+  showMessage(message, type) {
+    const messageElement = document.getElementById('successMessage');
+    if (!messageElement) return;
+    
+    messageElement.textContent = message;
+    messageElement.className = `success-message ${type === 'success' ? 'show' : 'error show'}`;
+    
+    setTimeout(() => {
+      messageElement.classList.remove('show', 'error');
+    }, 3000);
+  }
+
+  startAutoScroll() {
+    if (this.reviews.length <= this.reviewsPerView) return;
+    
+    this.stopAutoScroll();
+    this.autoScrollInterval = setInterval(() => {
+      this.nextReview();
+    }, 4000); // Change slide every 4 seconds
+  }
+
+  stopAutoScroll() {
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+      this.autoScrollInterval = null;
+    }
+  }
+
+  restartAutoScroll() {
+    this.stopAutoScroll();
+    setTimeout(() => this.startAutoScroll(), 1000);
+  }
+
+  nextReview() {
+    const maxIndex = Math.max(0, this.reviews.length - this.reviewsPerView);
+    this.currentIndex = this.currentIndex >= maxIndex ? 0 : this.currentIndex + 1;
+    this.updateCarouselPosition();
+  }
+
+  previousReview() {
+    const maxIndex = Math.max(0, this.reviews.length - this.reviewsPerView);
+    this.currentIndex = this.currentIndex <= 0 ? maxIndex : this.currentIndex - 1;
+    this.updateCarouselPosition();
+    this.restartAutoScroll();
+  }
+
+  updateCarouselPosition() {
+    const carousel = document.getElementById('reviewsCarousel');
+    if (!carousel) return;
+    
+    const cardWidth = 320; // min-width of review card
+    const gap = 32; // gap between cards (2rem)
+    const translateX = -(this.currentIndex * (cardWidth + gap));
+    
+    carousel.style.transform = `translateX(${translateX}px)`;
+  }
+}
+
+// Gallery functionality
+function loadGallery() {
+  const gallery = document.getElementById("workGallery");
+  if (!gallery) return;
+  
+  workImages.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    div.style.animationDelay = `${index * 0.1}s`;
+    div.innerHTML = `
+      <img src="${item.src}" alt="${item.alt}" title="${item.title}" loading="lazy" />
+      <div class="gallery-overlay">
+        <h3>${item.title}</h3>
+        <p>${item.desc}</p>
+      </div>
+    `;
+    gallery.appendChild(div);
+  });
+}
 
 // Mobile menu toggle
 function toggleMobileMenu() {
-  const navLinks = document.getElementById("navLinks")
-  navLinks.classList.toggle("active")
+  const navLinks = document.getElementById("navLinks");
+  if (navLinks) {
+    navLinks.classList.toggle("active");
+  }
 }
 
 // Smooth scrolling for navigation links
 function initSmoothScrolling() {
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
-      e.preventDefault()
-      const target = document.querySelector(this.getAttribute("href"))
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
       if (target) {
         target.scrollIntoView({
           behavior: "smooth",
           block: "start",
-        })
+        });
       }
 
       // Close mobile menu if open
-      document.getElementById("navLinks").classList.remove("active")
-    })
-  })
+      const navLinks = document.getElementById("navLinks");
+      if (navLinks) {
+        navLinks.classList.remove("active");
+      }
+    });
+  });
 }
 
 // Nav background on scroll
 function initNavScroll() {
   window.addEventListener("scroll", () => {
-    const nav = document.querySelector("nav")
+    const nav = document.querySelector("nav");
+    if (!nav) return;
+    
     if (window.scrollY > 100) {
-      nav.style.background = "rgba(255, 255, 255, 0.98)"
-      nav.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
-    } else {
-      nav.style.background = "rgba(255, 255, 255, 0.95)"
-      nav.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-    }
-  })
-}
-
-// Close mobile menu when clicking outside
-function initClickOutside() {
-  document.addEventListener("click", (e) => {
-    const nav = document.querySelector("nav")
-    const navLinks = document.getElementById("navLinks")
-    const menuBtn = document.getElementById("mobileMenuBtn")
-
-    if (!nav.contains(e.target) && navLinks.classList.contains("active")) {
-      navLinks.classList.remove("active")
-    }
-  })
-}
-
-// Initialize when page loads
-document.addEventListener("DOMContentLoaded", () => {
-  loadGallery()
-  displayReviews()
-  initSmoothScrolling()
-  initNavScroll()
-  initClickOutside()
-
-  // Mobile menu button
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn")
-  if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener("click", toggleMobileMenu)
-  }
-
-  // Add loading animation to images
-  const images = document.querySelectorAll("img")
-  images.forEach((img) => {
-    img.addEventListener("load", function () {
-      this.style.opacity = "1"
-    })
-    img.style.opacity = "0"
-    img.style.transition = "opacity 0.3s ease"
-  })
-})
-
-// Intersection Observer for animations
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: "0px 0px -50px 0px",
-}
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = "1"
-      entry.target.style.transform = "translateY(0)"
-    }
-  })
-}, observerOptions)
-
-// Initialize animations when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  // Observe sections for animations
-  document.querySelectorAll("section").forEach((section) => {
-    section.style.opacity = "0"
-    section.style.transform = "translateY(30px)"
-    section.style.transition = "all 0.8s ease-out"
-    observer.observe(section)
-  })
-})
+      nav.style.background = "rgba(255, 255, 255, 0.98)";
+      nav.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0
