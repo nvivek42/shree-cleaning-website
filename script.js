@@ -431,8 +431,6 @@ function initSmoothScrolling() {
   });
 }
 
-// ... (previous code remains the same until nav scroll function)
-
 // Nav background on scroll
 function initNavScroll() {
   window.addEventListener("scroll", () => {
@@ -441,43 +439,31 @@ function initNavScroll() {
     
     if (window.scrollY > 100) {
       nav.style.background = "rgba(255, 255, 255, 0.98)";
-      nav.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)";
+      nav.style.boxShadow = "var(--shadow-lg)";
     } else {
-      nav.style.background = "transparent";
-      nav.style.boxShadow = "none";
+      nav.style.background = "rgba(255, 255, 255, 0.95)";
+      nav.style.boxShadow = "var(--shadow-sm)";
     }
   });
 }
 
-// Initialize all functionalities
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize ReviewsManager
-  const reviewsManager = new ReviewsManager();
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Create ReviewsManager instance
+  new ReviewsManager();
   
   // Load gallery images
   loadGallery();
   
+  // Set up mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+  }
+  
   // Initialize smooth scrolling
   initSmoothScrolling();
   
-  // Initialize nav scroll effects
+  // Initialize nav scroll effect
   initNavScroll();
-  
-  // Mobile menu button functionality
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-  if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener("click", toggleMobileMenu);
-  }
-  
-  // Close mobile menu when clicking outside
-  document.addEventListener("click", (e) => {
-    const navLinks = document.getElementById("navLinks");
-    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-    
-    if (navLinks && mobileMenuBtn) {
-      if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-        navLinks.classList.remove("active");
-      }
-    }
-  });
 });
