@@ -1,36 +1,36 @@
 const workImages = [
   {
-    src: "https://nvivek42.github.io/shree-cleaning-website/images/image1.jpg",
+    src: "/shree-cleaning-website/images/image1.jpg",
     alt: "Home Cleaning",
     title: "Home Cleaning",
     desc: "Spotless home and kitchen cleaning.",
   },
   {
-    src: "images/image2.jpg",
+    src: "/shree-cleaning-website/images/image2.jpg",
     alt: "Office Cleaning",
     title: "Office Cleaning",
     desc: "Professional office workspace cleaning.",
   },
   {
-    src: "images/image3.jpg",
+    src: "/shree-cleaning-website/images/image3.jpg",
     alt: "Glass Cleaning",
     title: "Glass Cleaning",
     desc: "Windows, mirrors, and glass surfaces.",
   },
   {
-    src: "images/image4.jpg",
+    src: "/shree-cleaning-website/images/image4.jpg",
     alt: "Sanitization",
     title: "Sanitization",
     desc: "Germ-free, safe environments.",
   },
   {
-    src: "images/image5.jpg",
+    src: "/shree-cleaning-website/images/image5.jpg",
     alt: "Pantry Upkeep",
     title: "Pantry Upkeep",
     desc: "Clean, stocked, and well-managed pantries.",
   },
   {
-    src: "images/image6.jpg",
+    src: "/shree-cleaning-website/images/image6.jpg",
     alt: "After Event Clean-up",
     title: "Event Clean-up",
     desc: "Post-event rapid cleaning services.",
