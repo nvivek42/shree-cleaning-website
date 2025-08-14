@@ -37,79 +37,158 @@ const workImages = [
   },
 ]
 
-// --- Horizontally scrolling feedback with persistence ---
+// Reviews functionality
+const STORAGE_KEY = 'shreeCleaningReviews';
+let currentRating = 0;
+let autoScrollInterval;
 
-// Key for localStorage
-const FEEDBACK_KEY = "shree_cleaning_feedbacks";
+// DOM Elements
+const reviewsCarousel = document.getElementById('reviewsCarousel');
+const reviewForm = document.getElementById('reviewForm');
+const nameInput = document.getElementById('nameInput');
+const reviewText = document.getElementById('reviewText');
+const starIcons = document.querySelectorAll('.rating-input .stars i');
+const prevButton = document.getElementById('prevReview');
+const nextButton = document.getElementById('nextReview');
 
-// Get elements
-const reviewsCarousel = document.getElementById("reviewsCarousel");
-const addReviewForm = document.getElementById("addReviewForm");
-const reviewerName = document.getElementById("reviewerName");
-const reviewText = document.getElementById("reviewText");
-const btnLeft = document.getElementById("carouselBtnLeft");
-const btnRight = document.getElementById("carouselBtnRight");
+// Sample initial reviews
+const initialReviews = [
+    { name: "Priya Shah", rating: 5, text: "Exceptional cleaning service! They transformed my home completely." },
+    { name: "Rahul Mehta", rating: 4, text: "Very professional team and great attention to detail." },
+    { name: "Anjali Patel", rating: 5, text: "Best cleaning service in Pune! Highly recommended." }
+];
 
-// Load feedbacks from localStorage
-function loadFeedbacks() {
-    const stored = localStorage.getItem(FEEDBACK_KEY);
-    return stored ? JSON.parse(stored) : [
-        { name: "Neha P.", text: "Excellent cleaning! Very professional and on time." },
-        { name: "Rahul S.", text: "Our office looks spotless after every service." },
-        { name: "Priya G.", text: "Great attention to detail. Highly recommend!" }
-    ];
+// Load reviews from localStorage or use initial reviews
+function loadReviews() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : initialReviews;
 }
 
-// Save feedbacks to localStorage
-function saveFeedbacks(feedbacks) {
-    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedbacks));
+// Save reviews to localStorage
+function saveReviews(reviews) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
 }
 
-// Render feedbacks as horizontally scrolling cards
-function renderFeedbacks() {
-    const feedbacks = loadFeedbacks();
-    reviewsCarousel.innerHTML = "";
-    feedbacks.forEach(fb => {
-        const card = document.createElement("div");
-        card.className = "review-card";
-        card.innerHTML = `
-            <div class="reviewer">${fb.name}</div>
-            <div class="review-text">${fb.text}</div>
-        `;
-        reviewsCarousel.appendChild(card);
+// Create star rating HTML
+function getStarRating(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += `<i class="fas fa-star ${i <= rating ? 'active' : ''}"></i>`;
+    }
+    return stars;
+}
+
+// Render reviews in carousel
+function renderReviews() {
+    const reviews = loadReviews();
+    reviewsCarousel.innerHTML = reviews.map(review => `
+        <div class="review-card">
+            <div class="stars">${getStarRating(review.rating)}</div>
+            <div class="reviewer-name">${review.name}</div>
+            <div class="review-text">${review.text}</div>
+        </div>
+    `).join('');
+}
+
+// Star rating functionality
+starIcons.forEach(star => {
+    star.addEventListener('mouseover', function() {
+        const rating = this.dataset.rating;
+        starIcons.forEach(s => {
+            if (s.dataset.rating <= rating) {
+                s.classList.remove('far');
+                s.classList.add('fas');
+            } else {
+                s.classList.add('far');
+                s.classList.remove('fas');
+            }
+        });
     });
+
+    star.addEventListener('click', function() {
+        currentRating = this.dataset.rating;
+    });
+
+    star.addEventListener('mouseleave', function() {
+        starIcons.forEach(s => {
+            if (s.dataset.rating <= currentRating) {
+                s.classList.remove('far');
+                s.classList.add('fas');
+            } else {
+                s.classList.add('far');
+                s.classList.remove('fas');
+            }
+        });
+    });
+});
+
+// Form submission
+reviewForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!currentRating) {
+        alert('Please select a rating');
+        return;
+    }
+
+    const newReview = {
+        name: nameInput.value,
+        rating: parseInt(currentRating),
+        text: reviewText.value
+    };
+
+    const reviews = loadReviews();
+    reviews.push(newReview);
+    saveReviews(reviews);
+    renderReviews();
+
+    // Reset form
+    reviewForm.reset();
+    currentRating = 0;
+    starIcons.forEach(s => {
+        s.classList.add('far');
+        s.classList.remove('fas');
+    });
+});
+
+// Auto-scroll functionality
+function startAutoScroll() {
+    autoScrollInterval = setInterval(() => {
+        reviewsCarousel.scrollLeft += 1;
+        if (reviewsCarousel.scrollLeft >= reviewsCarousel.scrollWidth - reviewsCarousel.clientWidth) {
+            reviewsCarousel.scrollLeft = 0;
+        }
+    }, 30);
 }
 
-// Add review event
-addReviewForm.addEventListener("submit", function(e) {
-    e.preventDefault();
-    const name = reviewerName.value.trim() || "Anonymous";
-    const text = reviewText.value.trim();
-    if (!text) return;
-    const feedbacks = loadFeedbacks();
-    feedbacks.push({ name, text });
-    saveFeedbacks(feedbacks);
-    renderFeedbacks();
-    addReviewForm.reset();
-    // Scroll to last feedback
-    setTimeout(() => {
-        reviewsCarousel.scrollTo({ left: reviewsCarousel.scrollWidth, behavior: "smooth" });
-    }, 100);
+function stopAutoScroll() {
+    clearInterval(autoScrollInterval);
+}
+
+// Manual navigation
+prevButton.addEventListener('click', () => {
+    reviewsCarousel.scrollBy({
+        left: -320,
+        behavior: 'smooth'
+    });
 });
 
-// Carousel scroll buttons
-btnLeft.addEventListener("click", () => {
-    reviewsCarousel.scrollBy({ left: -300, behavior: "smooth" });
+nextButton.addEventListener('click', () => {
+    reviewsCarousel.scrollBy({
+        left: 320,
+        behavior: 'smooth'
+    });
 });
-btnRight.addEventListener("click", () => {
-    reviewsCarousel.scrollBy({ left: 300, behavior: "smooth" });
-});
 
-// Touch/drag scroll is enabled natively via overflow-x: auto
+// Pause auto-scroll on hover/touch
+reviewsCarousel.addEventListener('mouseenter', stopAutoScroll);
+reviewsCarousel.addEventListener('mouseleave', startAutoScroll);
+reviewsCarousel.addEventListener('touchstart', stopAutoScroll);
+reviewsCarousel.addEventListener('touchend', startAutoScroll);
 
-// Render on page load
-renderFeedbacks();
-
+// Initialize
+renderReviews();
+startAutoScroll();
 
 function loadGallery() {
   const gallery = document.getElementById("workGallery")
