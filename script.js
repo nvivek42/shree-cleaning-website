@@ -1,36 +1,36 @@
 const workImages = [
   {
-    src: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
+    src: "/images/image1",
     alt: "Home Cleaning",
     title: "Home Cleaning",
     desc: "Spotless home and kitchen cleaning.",
   },
   {
-    src: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop",
+    src: "/images/image2",
     alt: "Office Cleaning",
     title: "Office Cleaning",
     desc: "Professional office workspace cleaning.",
   },
   {
-    src: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&h=300&fit=crop",
+    src: "/images/image3",
     alt: "Glass Cleaning",
     title: "Glass Cleaning",
     desc: "Windows, mirrors, and glass surfaces.",
   },
   {
-    src: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=300&fit=crop",
+    src: "/images/image4",
     alt: "Sanitization",
     title: "Sanitization",
     desc: "Germ-free, safe environments.",
   },
   {
-    src: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+    src: "/images/image5",
     alt: "Pantry Upkeep",
     title: "Pantry Upkeep",
     desc: "Clean, stocked, and well-managed pantries.",
   },
   {
-    src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+    src: "/images/image6",
     alt: "After Event Clean-up",
     title: "Event Clean-up",
     desc: "Post-event rapid cleaning services.",
